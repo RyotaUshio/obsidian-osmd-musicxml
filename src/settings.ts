@@ -37,7 +37,7 @@ export class OsmdSettingTab extends PluginSettingTab {
 			.then(({ descEl }) => {
 				MarkdownRenderer.render(
 					this.app,
-					"See [OSMD's website](https://opensheetmusicdisplay.github.io/classdoc/interfaces/IOSMDOptions.html) for a list of available options.",
+					"You can specify the options to pass to the OSMD rendering engine (either in the YAML or JSON format; see the next setting). See [OSMD's website](https://opensheetmusicdisplay.github.io/classdoc/interfaces/IOSMDOptions.html) for a list of available options.",
 					descEl, "", this.component
 				)
 			})
