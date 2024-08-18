@@ -1,0 +1,17 @@
+/* @settings
+
+name: OSMD MusicXML Viewer
+id: osmd-musicxml
+settings:
+    - 
+        id: osmd-bg-dark
+        title: Background color in dark mode
+        description: Any CSS color value is allowed. Examples: "gray", "rgb(100, 100, 100)", "var(--interactive-accent)"
+        type: variable-text
+        default: white
+
+*/
+
+.theme-dark .osmd {
+    background-color: var(--osmd-bg-dark, white);
+}
