@@ -22,8 +22,8 @@ export default class SheetMusicPlugin extends Plugin {
 		// 	return new MuseScoreEmbed(ctx, file);
 		// })
 
-		this.registerEmbed(MUSICXML_EXTENSIONS, (ctx, file) => {
-			return new OpenSheetMusicDisplayEmbed(this, ctx.containerEl, file);
+		this.registerEmbed(MUSICXML_EXTENSIONS, (ctx, file, subpath) => {
+			return new OpenSheetMusicDisplayEmbed(this, ctx.containerEl, file, subpath);
 		});
 	}
 

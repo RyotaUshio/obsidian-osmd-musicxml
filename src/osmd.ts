@@ -1,5 +1,5 @@
-import { TFile } from "obsidian";
-import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
+import { Menu, TFile } from "obsidian";
+import { IOSMDOptions, OpenSheetMusicDisplay } from "opensheetmusicdisplay";
 
 import SheetMusicPlugin from 'main';
 import { SheetMusicPluginComponent } from "component";
@@ -10,12 +10,51 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
     containerEl: HTMLElement;
     file: TFile;
     osmd: OpenSheetMusicDisplay;
+    options?: IOSMDOptions;
 
-    constructor(plugin: SheetMusicPlugin, containerEl: HTMLElement, file: TFile) {
+    constructor(plugin: SheetMusicPlugin, containerEl: HTMLElement, file: TFile, subpath: string) {
         super(plugin);
         this.containerEl = containerEl;
+        this.containerEl.addClasses(["musicxml-embed", "osmd"]);
         this.file = file;
-        this.osmd = new OpenSheetMusicDisplay(this.containerEl);
+
+        // Rendering options
+        if (subpath && subpath.startsWith("#")) {
+            this.options = {};
+            const params = new URLSearchParams(subpath.slice(1));
+            
+            if (params.has("bar")) {
+                const bar = params.get("bar")!;
+                // "#bar=5" -> draw measure 5 only
+                if (bar.match(/^\d+$/)) {
+                    this.options.drawFromMeasureNumber = this.options.drawUpToMeasureNumber = +bar;
+                } else {
+                    // "#bar=5-10" -> draw measures 5 to 10
+                    // "#bar=-10" -> draw from the beginning to measure 10
+                    // "#bar=5-" -> draw from measure 5 to the end
+                    const match = bar.match(/^(\d*)-(\d*)$/);
+                    if (match) {
+                        match[1] && (this.options.drawFromMeasureNumber = +match[1]);
+                        match[2] && (this.options.drawUpToMeasureNumber = +match[2]);
+                    }
+                }
+            }
+        }
+        
+        this.osmd = new OpenSheetMusicDisplay(this.containerEl, this.options);
+
+        // Debugging utility
+        this.containerEl.addEventListener("contextmenu", (evt) => {
+            new Menu()
+                .addItem((item) => {
+                    item.setTitle("Expose \"osmd\" variable to console")
+                        .onClick(() => {
+                            // @ts-ignore
+                            window.osmd = this.osmd;
+                        })
+                })
+                .showAtMouseEvent(evt);
+        });
     }
 
     onload() {
