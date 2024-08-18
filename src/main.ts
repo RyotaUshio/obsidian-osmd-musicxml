@@ -1,14 +1,14 @@
 import { Plugin } from 'obsidian';
-import { MyPluginSettings, DEFAULT_SETTINGS, SampleSettingTab } from 'settings';
+import { SheetMusicSettings, DEFAULT_SETTINGS, SheetMusicSettingTab } from 'settings';
 
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class SheetMusicPlugin extends Plugin {
+	settings: SheetMusicSettings;
 
 	async onload() {
 		await this.loadSettings();
 		await this.saveSettings();
-		this.addSettingTab(new SampleSettingTab(this));
+		this.addSettingTab(new SheetMusicSettingTab(this));
 	}
 
 	async loadSettings() {

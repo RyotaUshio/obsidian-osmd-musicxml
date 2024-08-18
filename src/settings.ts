@@ -1,18 +1,18 @@
 import { PluginSettingTab, Setting } from 'obsidian';
-import MyPlugin from 'main';
+import SheetMusicPlugin from 'main';
 
 
-export interface MyPluginSettings {
+export interface SheetMusicSettings {
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
+export const DEFAULT_SETTINGS: SheetMusicSettings = {
 };
 
 // Inspired by https://stackoverflow.com/a/50851710/13613783
 export type KeysOfType<Obj, Type> = NonNullable<{ [k in keyof Obj]: Obj[k] extends Type ? k : never }[keyof Obj]>;
 
-export class SampleSettingTab extends PluginSettingTab {
-	constructor(public plugin: MyPlugin) {
+export class SheetMusicSettingTab extends PluginSettingTab {
+	constructor(public plugin: SheetMusicPlugin) {
 		super(plugin.app, plugin);
 	}
 
@@ -20,7 +20,7 @@ export class SampleSettingTab extends PluginSettingTab {
 	    return new Setting(this.containerEl).setName(heading).setHeading();
     }
 
-	addTextSetting(settingName: KeysOfType<MyPluginSettings, string>) {
+	addTextSetting(settingName: KeysOfType<SheetMusicSettings, string>) {
 		return new Setting(this.containerEl)
 			.addText((text) => {
 				text.setValue(this.plugin.settings[settingName])
@@ -33,7 +33,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			});
 	}
 
-	addNumberSetting(settingName: KeysOfType<MyPluginSettings, number>) {
+	addNumberSetting(settingName: KeysOfType<SheetMusicSettings, number>) {
 		return new Setting(this.containerEl)
 			.addText((text) => {
 				text.setValue('' + this.plugin.settings[settingName])
@@ -47,7 +47,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			});
 	}
 
-	addToggleSetting(settingName: KeysOfType<MyPluginSettings, boolean>, extraOnChange?: (value: boolean) => void) {
+	addToggleSetting(settingName: KeysOfType<SheetMusicSettings, boolean>, extraOnChange?: (value: boolean) => void) {
 		return new Setting(this.containerEl)
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings[settingName])
@@ -60,7 +60,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			});
 	}
 
-	addDropdowenSetting(settingName: KeysOfType<MyPluginSettings, string>, options: readonly string[], display?: (option: string) => string, extraOnChange?: (value: string) => void) {
+	addDropdowenSetting(settingName: KeysOfType<SheetMusicSettings, string>, options: readonly string[], display?: (option: string) => string, extraOnChange?: (value: string) => void) {
 		return new Setting(this.containerEl)
 			.addDropdown((dropdown) => {
 				const displayNames = new Set<string>();
@@ -81,7 +81,7 @@ export class SampleSettingTab extends PluginSettingTab {
 			});
 	}
 
-	addSliderSetting(settingName: KeysOfType<MyPluginSettings, number>, min: number, max: number, step: number) {
+	addSliderSetting(settingName: KeysOfType<SheetMusicSettings, number>, min: number, max: number, step: number) {
 		return new Setting(this.containerEl)
 			.addSlider((slider) => {
 				slider.setLimits(min, max, step)

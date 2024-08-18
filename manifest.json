@@ -1,9 +1,9 @@
 {
-	"id": "",
-	"name": "",
+	"id": "sheetmusic",
+	"name": "Sheet Music",
 	"version": "0.1.0",
-	"minAppVersion": "1.3.5",
-	"description": "",
+	"minAppVersion": "1.7.0",
+	"description": "Embed sheet music in your notes.",
 	"author": "Ryota Ushio",
 	"authorUrl": "https://github.com/RyotaUshio",
 	"fundingUrl": {
