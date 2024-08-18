@@ -7,12 +7,32 @@ This plugin supports both uncompressed (.musicxml) and compressed (.mxl) formats
 
 ## Features
 
+### Embedding MusicXML files
+
 This plugin allows you to embed MusicXML files in the standard `![[filename]]` (or `![](filename)`) notation.
 You will not break a link even if you rename the target file because the link will be auto-updated (you need to allow Obsidian to do so in _Settings > Files and links > Automatically update internal links_).
+
+You can provide additional parameters to customize the rendering behavior of each embed:
+
+- `bar`: Embed only the specified range of bars (measures) out of the entire song.
+  - `bar=5`: The 5th bar
+  - `bar=5-8`: From the 5th bar to the 8th bar
+  - `bar=5-`: From the 5th bar to the end of the song
+  - `bar=-8`: From the beginning of the song to the 8th bar
+- `credits`/`nocredits`: Show or hide the song title, subtitle, and the composer name.
+  - Overrides the `drawCredits` option
+
+These parameters should be appended after the link text, similarly to a [heading link](https://help.obsidian.md/Linking+notes+and+files/Internal+links#Link+to+a+heading+in+a+note), and different parameters should be separated by `&`. For example:
+- `![[file.mxl#bar=5-6]]`
+- `![[file.musicxml#nocredits]]`
+- `![[file.mxl#bar=1&credits]]`
+
+Furthermore, various other global rendering options can be specified via the plugin settings.
 
 ### What is planned, but not implemented yet
 
 - Standalone view (not just embeds)
+- Hover popover (page preview) support
 - Audio playback (awaiting for the OSMD library to make this feature open-source; if you need this feature soon, please consider being a monthly GitHub sponsor for me so that I can pay for it. See [here](https://github.com/sponsors/opensheetmusicdisplay) for the details.)
 
 ### What will not be implemented
