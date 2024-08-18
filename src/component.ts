@@ -1,9 +1,9 @@
-import SheetMusicPlugin from 'main';
+import OsmdPlugin from 'main';
 import { Component } from 'obsidian';
 
 
-export class SheetMusicPluginComponent extends Component {
-    constructor(public plugin: SheetMusicPlugin) {
+export class OsmdPluginComponent extends Component {
+    constructor(public plugin: OsmdPlugin) {
         super();
     }
 

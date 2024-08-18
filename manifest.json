@@ -1,9 +1,9 @@
 {
-	"id": "sheetmusic",
-	"name": "Sheet Music",
+	"id": "osmd-musicxml",
+	"name": "OSMD MusicXML Viewer",
 	"version": "0.1.0",
 	"minAppVersion": "1.7.0",
-	"description": "Embed sheet music in your notes.",
+	"description": "Render sheet music in the MusicXML format using OpenSheetMusicDisplay (OSMD).",
 	"author": "Ryota Ushio",
 	"authorUrl": "https://github.com/RyotaUshio",
 	"fundingUrl": {

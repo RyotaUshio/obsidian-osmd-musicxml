@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian';
 import { OpenSheetMusicDisplayEmbed } from 'osmd';
-import { SheetMusicSettings, DEFAULT_SETTINGS, SheetMusicSettingTab } from 'settings';
+import { OsmdSettings, DEFAULT_SETTINGS, OsmdSettingTab } from 'settings';
 import { EmbedCreator } from 'typings';
 
 
@@ -10,13 +10,13 @@ export const MUSESCORE_VIEW_TYPE = 'musescore';
 export const MUSICXML_EXTENSIONS = ['mxl', 'musicxml'];
 
 
-export default class SheetMusicPlugin extends Plugin {
-	settings: SheetMusicSettings;
+export default class OsmdPlugin extends Plugin {
+	settings: OsmdSettings;
 
 	async onload() {
 		await this.loadSettings();
 		await this.saveSettings();
-		this.addSettingTab(new SheetMusicSettingTab(this));
+		this.addSettingTab(new OsmdSettingTab(this));
 
 		// this.registerEmbed(MUSESCORE_EXTENSIONS, (ctx, file) => {
 		// 	return new MuseScoreEmbed(ctx, file);

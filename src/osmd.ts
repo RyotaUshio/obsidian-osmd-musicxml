@@ -1,18 +1,18 @@
 import { Menu, TFile } from "obsidian";
 import { IOSMDOptions, OpenSheetMusicDisplay } from "opensheetmusicdisplay";
 
-import SheetMusicPlugin from 'main';
-import { SheetMusicPluginComponent } from "component";
+import OsmdPlugin from 'main';
+import { OsmdPluginComponent } from "component";
 import { Embed } from "typings";
 
 
-export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implements Embed {
+export class OpenSheetMusicDisplayEmbed extends OsmdPluginComponent implements Embed {
     containerEl: HTMLElement;
     file: TFile;
     osmd: OpenSheetMusicDisplay;
     options?: IOSMDOptions;
 
-    constructor(plugin: SheetMusicPlugin, containerEl: HTMLElement, file: TFile, subpath: string) {
+    constructor(plugin: OsmdPlugin, containerEl: HTMLElement, file: TFile, subpath: string) {
         super(plugin);
         this.containerEl = containerEl;
         this.containerEl.addClasses(["musicxml-embed", "osmd"]);
