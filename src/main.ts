@@ -1,5 +1,13 @@
 import { Plugin } from 'obsidian';
+import { OpenSheetMusicDisplayEmbed } from 'osmd';
 import { SheetMusicSettings, DEFAULT_SETTINGS, SheetMusicSettingTab } from 'settings';
+import { EmbedCreator } from 'typings';
+
+
+export const MUSESCORE_EXTENSIONS = ['mscz'];
+export const MUSESCORE_VIEW_TYPE = 'musescore';
+
+export const MUSICXML_EXTENSIONS = ['mxl', 'musicxml'];
 
 
 export default class SheetMusicPlugin extends Plugin {
@@ -9,6 +17,14 @@ export default class SheetMusicPlugin extends Plugin {
 		await this.loadSettings();
 		await this.saveSettings();
 		this.addSettingTab(new SheetMusicSettingTab(this));
+
+		// this.registerEmbed(MUSESCORE_EXTENSIONS, (ctx, file) => {
+		// 	return new MuseScoreEmbed(ctx, file);
+		// })
+
+		this.registerEmbed(MUSICXML_EXTENSIONS, (ctx, file) => {
+			return new OpenSheetMusicDisplayEmbed(this, ctx.containerEl, file);
+		});
 	}
 
 	async loadSettings() {
@@ -17,5 +33,16 @@ export default class SheetMusicPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	registerEmbed(extensions: string[], embedCreator: EmbedCreator) {
+		this.app.embedRegistry.registerExtensions(extensions, embedCreator);
+		this.register(() => {
+			return this.app.embedRegistry.unregisterExtensions(extensions);
+		});
+	}
+
+	private async loadVerovio() {
+
 	}
 }
