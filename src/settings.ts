@@ -87,6 +87,23 @@ export class OsmdSettingTab extends PluginSettingTab {
 						this.plugin.saveSettings();
 					});
 			});
+
+		new Setting(this.containerEl)
+		.setName('More options')	
+		.setDesc(`You can find more options in Style Settings > ${this.plugin.manifest.name}.`)
+			.addButton((button) => {
+				button.setButtonText('Open Style Settings')
+					.onClick(() => {
+						// @ts-ignore
+						const styleSettingsTab = this.app.setting.pluginTabs.find((tab) => tab.id === 'obsidian-style-settings');
+						if (styleSettingsTab) {
+							// @ts-ignore
+							this.app.setting.openTab(styleSettingsTab);
+						} else {
+							open('obsidian://show-plugin?id=obsidian-style-settings');
+						}
+					});
+			});
 	}
 
 	hide() {

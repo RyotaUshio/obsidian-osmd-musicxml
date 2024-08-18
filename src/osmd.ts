@@ -1,7 +1,7 @@
 import { Menu, TFile } from "obsidian";
-import { IOSMDOptions, OpenSheetMusicDisplay } from "opensheetmusicdisplay";
+import { OpenSheetMusicDisplay } from "opensheetmusicdisplay";
 
-import OsmdPlugin from 'main';
+import OsmdPlugin from "main";
 import { OsmdPluginComponent } from "component";
 import { Embed } from "typings";
 
