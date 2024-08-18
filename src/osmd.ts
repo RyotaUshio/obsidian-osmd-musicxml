@@ -20,9 +20,9 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
 
         // Rendering options
         if (subpath && subpath.startsWith("#")) {
-            this.options = {};
+            this.options = { cursorsOptions: [{ alpha: 0.5, color: 'yellow', follow: true, type: 1 }] };
             const params = new URLSearchParams(subpath.slice(1));
-            
+
             if (params.has("bar")) {
                 const bar = params.get("bar")!;
                 // "#bar=5" -> draw measure 5 only
@@ -40,7 +40,7 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
                 }
             }
         }
-        
+
         this.osmd = new OpenSheetMusicDisplay(this.containerEl, this.options);
 
         // Debugging utility
@@ -69,16 +69,17 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
     async loadFile() {
         if (this.file.extension === "mxl") {
             await this.loadCompressedMusicXml();
-            return;
+        } else {
+            await this.loadUncompressedMusicXml();
         }
 
-        await this.loadUncompressedMusicXml();
+        this.osmd.cursor.show();
+        this.osmd.render();
     }
 
     async loadUncompressedMusicXml() {
         const content = await this.app.vault.read(this.file);
         await this.osmd.load(content);
-        this.osmd.render();
     }
 
     async loadCompressedMusicXml() {
@@ -89,7 +90,6 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
             const reader = new FileReader();
             reader.onload = async () => {
                 await this.osmd.load(reader.result as string);
-                this.osmd.render();
                 resolve();
             };
             reader.onerror = reject;
