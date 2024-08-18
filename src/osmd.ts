@@ -20,24 +20,32 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
 
         // Rendering options
         if (subpath && subpath.startsWith("#")) {
-            this.options = { cursorsOptions: [{ alpha: 0.5, color: 'yellow', follow: true, type: 1 }] };
+            this.options = {};
             const params = new URLSearchParams(subpath.slice(1));
 
             if (params.has("bar")) {
-                const bar = params.get("bar")!;
+                const value = params.get("bar")!;
                 // "#bar=5" -> draw measure 5 only
-                if (bar.match(/^\d+$/)) {
-                    this.options.drawFromMeasureNumber = this.options.drawUpToMeasureNumber = +bar;
+                if (value.match(/^\d+$/)) {
+                    this.options.drawFromMeasureNumber = this.options.drawUpToMeasureNumber = +value;
                 } else {
                     // "#bar=5-10" -> draw measures 5 to 10
                     // "#bar=-10" -> draw from the beginning to measure 10
                     // "#bar=5-" -> draw from measure 5 to the end
-                    const match = bar.match(/^(\d*)-(\d*)$/);
+                    const match = value.match(/^(\d*)-(\d*)$/);
                     if (match) {
                         match[1] && (this.options.drawFromMeasureNumber = +match[1]);
                         match[2] && (this.options.drawUpToMeasureNumber = +match[2]);
                     }
                 }
+            }
+            if (params.has("credits")) {
+                const value = params.get("credits")!;
+                this.options.drawCredits = value && value !== "true" ? false : true;
+            }
+            if (params.has("nocredits")) {
+                const value = params.get("nocredits")!;
+                this.options.drawCredits = !value || value !== "false" ? false : true; 
             }
         }
 
@@ -73,7 +81,6 @@ export class OpenSheetMusicDisplayEmbed extends SheetMusicPluginComponent implem
             await this.loadUncompressedMusicXml();
         }
 
-        this.osmd.cursor.show();
         this.osmd.render();
     }
 
