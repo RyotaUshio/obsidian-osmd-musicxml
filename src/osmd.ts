@@ -10,7 +10,6 @@ export class OpenSheetMusicDisplayEmbed extends OsmdPluginComponent implements E
     containerEl: HTMLElement;
     file: TFile;
     osmd: OpenSheetMusicDisplay;
-    options?: IOSMDOptions;
 
     constructor(plugin: OsmdPlugin, containerEl: HTMLElement, file: TFile, subpath: string) {
         super(plugin);
@@ -19,37 +18,42 @@ export class OpenSheetMusicDisplayEmbed extends OsmdPluginComponent implements E
         this.file = file;
 
         // Rendering options
+        const options = this.plugin.parseOsmdOptions();
+
         if (subpath && subpath.startsWith("#")) {
-            this.options = {};
             const params = new URLSearchParams(subpath.slice(1));
 
             if (params.has("bar")) {
                 const value = params.get("bar")!;
                 // "#bar=5" -> draw measure 5 only
                 if (value.match(/^\d+$/)) {
-                    this.options.drawFromMeasureNumber = this.options.drawUpToMeasureNumber = +value;
+                    options.drawFromMeasureNumber = options.drawUpToMeasureNumber = parseInt(value);
                 } else {
                     // "#bar=5-10" -> draw measures 5 to 10
                     // "#bar=-10" -> draw from the beginning to measure 10
                     // "#bar=5-" -> draw from measure 5 to the end
                     const match = value.match(/^(\d*)-(\d*)$/);
                     if (match) {
-                        match[1] && (this.options.drawFromMeasureNumber = +match[1]);
-                        match[2] && (this.options.drawUpToMeasureNumber = +match[2]);
+                        const start = parseInt(match[1]);
+                        if (!Number.isNaN(start)) options.drawFromMeasureNumber = start;
+                        
+                        const end = parseInt(match[2]);
+                        if (!Number.isNaN(end)) options.drawUpToMeasureNumber = end;
                     }
                 }
             }
             if (params.has("credits")) {
                 const value = params.get("credits")!;
-                this.options.drawCredits = value && value !== "true" ? false : true;
+                options.drawCredits = value && value !== "true" ? false : true;
             }
             if (params.has("nocredits")) {
                 const value = params.get("nocredits")!;
-                this.options.drawCredits = !value || value !== "false" ? false : true; 
+                options.drawCredits = !value || value !== "false" ? false : true;
             }
         }
 
-        this.osmd = new OpenSheetMusicDisplay(this.containerEl, this.options);
+        this.osmd = new OpenSheetMusicDisplay(this.containerEl, options);
+        this.osmd.setLogLevel(this.settings.logLevel);
 
         // Debugging utility
         this.containerEl.addEventListener("contextmenu", (evt) => {

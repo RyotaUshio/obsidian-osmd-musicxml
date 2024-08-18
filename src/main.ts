@@ -1,4 +1,5 @@
-import { Plugin } from 'obsidian';
+import { parseYaml, Plugin, stringifyYaml } from 'obsidian';
+import { IOSMDOptions } from 'opensheetmusicdisplay';
 import { OpenSheetMusicDisplayEmbed } from 'osmd';
 import { OsmdSettings, DEFAULT_SETTINGS, OsmdSettingTab } from 'settings';
 import { EmbedCreator } from 'typings';
@@ -33,6 +34,31 @@ export default class OsmdPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	parseOsmdOptions(): IOSMDOptions {
+		if (!this.settings.options) {
+			return {};
+		}
+
+		try {
+			if (this.settings.optionFormat === 'yaml') {
+				return parseYaml(this.settings.options);
+			} else {
+				return JSON.parse(this.settings.options);
+			}
+		} catch (e) {
+			console.error('Failed to parse the options', e);
+			return {};
+		}
+	}
+
+	stringifyOsmdOptions(options: IOSMDOptions) {
+		if (this.settings.optionFormat === 'yaml') {
+			return stringifyYaml(options);
+		} else {
+			return JSON.stringify(options, null, 2);
+		}
 	}
 
 	registerEmbed(extensions: string[], embedCreator: EmbedCreator) {

@@ -1,101 +1,96 @@
-import { PluginSettingTab, Setting } from 'obsidian';
+import { Component, MarkdownRenderer, PluginSettingTab, Setting, TextAreaComponent } from 'obsidian';
 import OsmdPlugin from 'main';
 
 
 export interface OsmdSettings {
+	options: string;
+	optionFormat: "yaml" | "json";
+	logLevel: typeof LOG_LEVELS[number];
 }
 
 export const DEFAULT_SETTINGS: OsmdSettings = {
+	options: "",
+	optionFormat: "yaml",
+	logLevel: "warn"
 };
+
+const LOG_LEVELS = ["trace", "debug", "info", "warn", "error"] as const;
 
 // Inspired by https://stackoverflow.com/a/50851710/13613783
 export type KeysOfType<Obj, Type> = NonNullable<{ [k in keyof Obj]: Obj[k] extends Type ? k : never }[keyof Obj]>;
 
 export class OsmdSettingTab extends PluginSettingTab {
+	component: Component;
+	textArea: TextAreaComponent;
+
 	constructor(public plugin: OsmdPlugin) {
 		super(plugin.app, plugin);
+		this.component = new Component();
 	}
 
-	addHeading(heading: string) {
-	    return new Setting(this.containerEl).setName(heading).setHeading();
-    }
-
-	addTextSetting(settingName: KeysOfType<OsmdSettings, string>) {
-		return new Setting(this.containerEl)
-			.addText((text) => {
-				text.setValue(this.plugin.settings[settingName])
-					.setPlaceholder(DEFAULT_SETTINGS[settingName])
-					.onChange(async (value) => {
-						// @ts-ignore
-						this.plugin.settings[settingName] = value;
-						await this.plugin.saveSettings();
-					});
-			});
-	}
-
-	addNumberSetting(settingName: KeysOfType<OsmdSettings, number>) {
-		return new Setting(this.containerEl)
-			.addText((text) => {
-				text.setValue('' + this.plugin.settings[settingName])
-					.setPlaceholder('' + DEFAULT_SETTINGS[settingName])
-					.then((text) => text.inputEl.type = "number")
-					.onChange(async (value) => {
-						// @ts-ignore
-						this.plugin.settings[settingName] = value === '' ? DEFAULT_SETTINGS[settingName] : +value;
-						await this.plugin.saveSettings();
-					});
-			});
-	}
-
-	addToggleSetting(settingName: KeysOfType<OsmdSettings, boolean>, extraOnChange?: (value: boolean) => void) {
-		return new Setting(this.containerEl)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings[settingName])
-					.onChange(async (value) => {
-						// @ts-ignore
-						this.plugin.settings[settingName] = value;
-						await this.plugin.saveSettings();
-						extraOnChange?.(value);
-					});
-			});
-	}
-
-	addDropdowenSetting(settingName: KeysOfType<OsmdSettings, string>, options: readonly string[], display?: (option: string) => string, extraOnChange?: (value: string) => void) {
-		return new Setting(this.containerEl)
-			.addDropdown((dropdown) => {
-				const displayNames = new Set<string>();
-				for (const option of options) {
-					const displayName = display?.(option) ?? option;
-					if (!displayNames.has(displayName)) {
-						dropdown.addOption(option, displayName);
-						displayNames.add(displayName);
-					}
-				};
-				dropdown.setValue(this.plugin.settings[settingName])
-					.onChange(async (value) => {
-						// @ts-ignore
-						this.plugin.settings[settingName] = value;
-						await this.plugin.saveSettings();
-						extraOnChange?.(value);
-					});
-			});
-	}
-
-	addSliderSetting(settingName: KeysOfType<OsmdSettings, number>, min: number, max: number, step: number) {
-		return new Setting(this.containerEl)
-			.addSlider((slider) => {
-				slider.setLimits(min, max, step)
-					.setValue(this.plugin.settings[settingName])
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						// @ts-ignore
-						this.plugin.settings[settingName] = value;
-						await this.plugin.saveSettings();
-					});
-			});
-	}
-	
 	display(): void {
+		this.component.load();
 		this.containerEl.empty();
+
+		new Setting(this.containerEl)
+			.setName("Options")
+			.then(({ descEl }) => {
+				MarkdownRenderer.render(
+					this.app,
+					"See [OSMD's website](https://opensheetmusicdisplay.github.io/classdoc/interfaces/IOSMDOptions.html) for a list of available options.",
+					descEl, "", this.component
+				)
+			})
+			.addTextArea((textArea) => {
+				this.textArea = textArea;
+				textArea
+					.setValue(this.plugin.settings.options)
+					.onChange((value) => {
+						this.plugin.settings.options = value;
+						this.plugin.saveSettings();
+					});
+				textArea.inputEl.rows = 10;
+				textArea.inputEl.cols = 30;
+			});
+
+		new Setting(this.containerEl)
+			.setName("Format of the options")
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("yaml", "YAML")
+					.addOption("json", "JSON")
+					.setValue(this.plugin.settings.optionFormat)
+					.onChange((value: OsmdSettings['optionFormat']) => {
+						const oldValue = this.plugin.settings.optionFormat;
+						if (oldValue === value) return;
+
+						const options = this.plugin.parseOsmdOptions();
+						this.plugin.settings.optionFormat = value;
+						this.textArea.setValue(this.plugin.settings.options = this.plugin.stringifyOsmdOptions(options));
+
+						this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(this.containerEl)
+			.setName("Log level")
+			.setDesc("How much information should be logged to the developer console.")
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOptions(LOG_LEVELS.reduce((acc, level) => {
+						acc[level] = level[0].toUpperCase() + level.slice(1);
+						return acc;
+					}, {} as Record<typeof LOG_LEVELS[number], string>))
+					.setValue(this.plugin.settings.logLevel)
+					.onChange((value: OsmdSettings['logLevel']) => {
+						this.plugin.settings.logLevel = value;
+						this.plugin.saveSettings();
+					});
+			});
+	}
+
+	hide() {
+		super.hide();
+		this.component.unload();
 	}
 }
