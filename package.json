@@ -19,7 +19,6 @@
 		"obsidian": "latest",
 		"opensheetmusicdisplay": "^1.8.9",
 		"tslib": "2.4.0",
-		"typescript": "^5.5.4",
-		"verovio": "^4.2.0"
+		"typescript": "^5.5.4"
 	}
 }
