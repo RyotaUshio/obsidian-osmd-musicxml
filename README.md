@@ -39,6 +39,10 @@ Furthermore, various other global rendering options can be specified via the plu
 
 - Editing feature: it will be always better to use a dedicated application.
 
+## Installation
+
+This plugin is in beta. You can install it using [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+
 ## Support development
 
 If you find my plugins useful, please support my work to ensure they continue to work!

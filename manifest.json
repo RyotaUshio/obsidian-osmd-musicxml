@@ -1,8 +1,8 @@
 {
     "id": "osmd-musicxml",
     "name": "OSMD MusicXML Viewer",
-    "version": "0.1.0",
-    "minAppVersion": "1.7.0",
+    "version": "0.1.1",
+    "minAppVersion": "1.6.7",
     "description": "Render sheet music in the MusicXML format using OpenSheetMusicDisplay (OSMD).",
     "author": "Ryota Ushio",
     "authorUrl": "https://github.com/RyotaUshio",

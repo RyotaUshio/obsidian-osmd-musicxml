@@ -1,6 +1,6 @@
 {
     "name": "obsidian-osmd-musicxml",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "An Obsidian.md plugin for rendering sheet music in the MusicXML format using OpenSheetMusicDisplay (OSMD).",
     "scripts": {
         "dev": "node esbuild.config.mjs",
