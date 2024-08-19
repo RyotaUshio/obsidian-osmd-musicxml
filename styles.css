@@ -6,7 +6,7 @@ settings:
     - 
         id: osmd-bg-dark
         title: Background color in dark mode
-        description: Any CSS color value is allowed. Examples: "gray", "rgb(100, 100, 100)", "var(--interactive-accent)"
+        description: 'Any CSS color value is allowed. Examples: "gray", "rgb(100, 100, 100)", "var(--interactive-accent)"'
         type: variable-text
         default: white
 
